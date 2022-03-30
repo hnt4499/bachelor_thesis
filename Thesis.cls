@@ -71,7 +71,7 @@
 %----------------------------------------------------------------------------------------
 %	MARGINS
 %----------------------------------------------------------------------------------------
-\setmarginsrb  {1.456in}  % left margin (3.7cm NTU)  default: 1.5in
+\setmarginsrb  {1.0in}  % left margin (3.7cm NTU)  default: 1.5in
                         { 0.8in}  % top margin       default: 0.6in
                         { 1.0in}  % right margin     default: 1.0in
                         { 0.8in}  % bottom margin    default: 0.8in
@@ -177,6 +177,7 @@
    \let\\\space
 }
 \newcommand*{\supervisor}[1]{\def\supname{#1}}
+\newcommand*{\cosupervisor}[1]{\def\ssupname{#1}}
 \newcommand*{\thesistitle}[1]{\def\ttitle{#1}}
 \newcommand*{\examiner}[1]{\def\examname{#1}}
 \newcommand*{\degree}[1]{\def\degreename{#1}}
@@ -203,15 +204,16 @@
 
 %Your thesis title - this is used in the title and abstract
 %-------------------------------------------------
-\thesistitle{\href{https://github.com/wang-chen/thesis_template_ntu}{The Greatest Thesis in the World}} %
+\thesistitle{Open Domain Question Answering System} %
 %-------------------------------------------------
-\supervisor{Prof. Einstein \textsc{XXX}} % You supervisor's name - this is used in the title page
+\supervisor{Asst. Prof. Pun Chi Seng} % You supervisor's name - this is used in the title page
+\cosupervisor{Assoc. Prof. Joty Shafiq Rayhan} % You supervisor's name - this is used in the title page
 %-------------------------------------------------
 \examiner{} % Your examiner's name - this is not currently used anywhere in the template, cite it with \examname if you want it
 %-------------------------------------------------
-\degree{Doctor of Philosophy} % Your degree name - this is currently used in the title page and abstract
+\degree{Bachelor of Science in Mathematical Sciences} % Your degree name - this is currently used in the title page and abstract
 %-------------------------------------------------
-\authors{\href{https://wang-chen.github.io}{Author Name}} % Your name - this is used in the title page and abstract
+\authors{Hoang Nghia Tuyen} % Your name - this is used in the title page and abstract
 %-------------------------------------------------
 \addresses{} % Your address - this is not currently used anywhere in the template, cite it with \addressnames if you want it
 %-------------------------------------------------
@@ -219,37 +221,13 @@
 %-------------------------------------------------
 \keywords{} % Keywords for your thesis - this is not currently used anywhere in the template, cite it with \keywordnames if you want it
 %-------------------------------------------------
-\university{\texorpdfstring{\href{http://www.university.com} % Your university's URL
-                {University Name}} % Your university's name - this is currently used in the title page
-                {University Name}}
+\university{Nanyang Technological Unversity} % Your university's name - this is currently used in the title page
+
 %-------------------------------------------------
-\UNIVERSITY{\texorpdfstring{\href{http://www.ntu.edu.sg/} % Your university's URL
-                {UNIVERSITY NAME (IN BLOCK CAPITALS)}} % Your university's name in capitals - this is currently used in the abstract page
-                {UNIVERSITY NAME (IN BLOCK CAPITALS)}}
+\UNIVERSITY{NANYANG TECHNOLOGICAL UNIVERSITY} % Your university's name in capitals - this is currently used in the abstract page
+
 %-------------------------------------------------
-\department{\texorpdfstring{\href{http://www.eee.ntu.edu.sg} % Your department's URL
-                {School of Electrical \& Electronic Engineering}} % Your department's name - used in the title page and abstract
-                {Department or School Name}}
-%-------------------------------------------------
-\DEPARTMENT{\texorpdfstring{\href{Department or School Web Site URL Here (include http://)} % Your department's URL
-                {DEPARTMENT OR SCHOOL NAME (IN BLOCK CAPITALS)}} % Your department's name in capitals - this is not currently used anywhere in the template, cite it with \DEPTNAME if you want it
-                {DEPARTMENT OR SCHOOL NAME (IN BLOCK CAPITALS)}}
-%-------------------------------------------------
-\group{\texorpdfstring{\href{Research Group Web Site URL Here (include http://)} % Your research group's URL
-                {Research Group Name}} % Your research group's name - this is currently used in the title page
-                {Research Group Name}}
-%-------------------------------------------------
-\GROUP{\texorpdfstring{\href{Research Group Web Site URL Here (include http://)} % Your research group's URL
-                {RESEARCH GROUP NAME (IN BLOCK CAPITALS)}} % Your research group's name in capitals - this is not currently used anywhere in the template, cite it with \GROUPNAME if you want it
-                {RESEARCH GROUP NAME (IN BLOCK CAPITALS)}}
-%-------------------------------------------------
-\faculty{\texorpdfstring{\href{Faculty Web Site URL Here (include http://)} % Your faculty's URL
-                {Faculty Name}} % Your faculty's name - this is currently used in the abstract page
-                {Faculty Name}}
-%-------------------------------------------------
-\FACULTY{\texorpdfstring{\href{Faculty Web Site URL Here (include http://)} % Your faculty's URL
-                {FACULTY NAME (IN BLOCK CAPITALS)}} % Your faculty's name in capitals - this is not currently used anywhere in the template, cite it with \FACNAME if you want it
-                {FACULTY NAME (IN BLOCK CAPITALS)}}
+\department{School of Physical \& Mathematical Sciences} % Your department's name - used in the title page and abstract
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
@@ -276,14 +254,16 @@
   \href{http://www.ntu.edu.sg}{\includegraphics[width=230pt]{Styles/ntu_logo}}\\%[2cm]
   \vfill
   \textbf{\Large \authornames}\\%[1.2cm]
+  {\large Supervisor: \textbf{\supname}}\\
+  {\large Co-supervisor: \textbf{\ssupname}}\\
   {\large \deptname}\\%[1.2cm] % University name
   \vfill
   \setstretch{1.2}
-  \large A thesis submitted to the Nanyang Technological University \\ in partial fulfillment of the requirements for the degree of\\ \degreename\\[1cm] % University requirement text
+  \large A thesis submitted to the Nanyang Technological University \\ submitted as part of the honours requirements for the degree of\\ \degreename\\[1cm] % University requirement text
   {\large\bf \the\year}\\[2cm] % Date
   \end{center}
   \end{titlepage}
-  \cleardoublepage
+%  \cleardoublepage
 }
 
 \newcommand\maketitleforreview{
@@ -300,15 +280,16 @@
 			\textbf{\LARGE \newline \ttitle}\\% Thesis title
 			\vfill
 			\textbf{\Large \textbf{\authornames}}\\[1cm]
+
 			\vfill
 			{\large \textbf{\deptname}}\\%[1.2cm] % University name
 			[1.2cm]
 			\setstretch{1.2}
-			\large A thesis submitted to the Nanyang Technological University \\ in partial fulfillment of the requirements for the degree of\\ \degreename\\[1cm] % University requirement text
+			\large A thesis submitted to the Nanyang Technological University \\ submitted as part of the honours requirements for the degree of\\ \degreename\\[1cm] % University requirement text
 			{\large\bf \the\year}\\[2cm] % Date
 		\end{center}
 	\end{titlepage}
-	\cleardoublepage
+	% \cleardoublepage
 }
 
 
@@ -339,9 +320,11 @@
 }
 {
   \vfil\vfil\vfil\null
-  \cleardoublepage
+  % \cleardoublepage
 }
 
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENT DESIGN
 %----------------------------------------------------------------------------------------
 \addtocounter{secnumdepth}{1}
 \setcounter{tocdepth}{6}
@@ -363,7 +346,7 @@
            \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}
     \@starttoc{toc}
     \if@restonecol\twocolumn\fi
-   \cleardoublepage
+  %  \cleardoublepage
 }\end{spacing}
 }
 \renewcommand\listoffigures{
@@ -381,7 +364,7 @@
               {\MakeUppercase\listfigurename}}
     \@starttoc{lof}
     \if@restonecol\twocolumn\fi
-    \cleardoublepage
+    % \cleardoublepage
 }\end{spacing}
 }
 \renewcommand\listoftables{
@@ -399,7 +382,7 @@
           \MakeUppercase\listtablename}{\MakeUppercase\listtablename}}
     \@starttoc{lot}
     \if@restonecol\twocolumn\fi
-    \cleardoublepage
+    % \cleardoublepage
 }\end{spacing}
 }
 \newcommand\listsymbolname{Abbreviations}
@@ -411,7 +394,7 @@
       \@mkboth{
           \MakeUppercase\listsymbolname}{\MakeUppercase\listsymbolname}}
 \begin{longtable}[c]{#1}#2\end{longtable}\par
-    \cleardoublepage
+    % \cleardoublepage
 }
 \newcommand\listconstants{Physical Constants}
 \usepackage{longtable}
@@ -422,7 +405,7 @@
       \@mkboth{
           \MakeUppercase\listconstants}{\MakeUppercase\listconstants}}
 \begin{longtable}[c]{#1}#2\end{longtable}\par
-    \cleardoublepage
+    % \cleardoublepage
 }
 \newcommand\listnomenclature{Symbols and Acronyms}
 \usepackage{longtable}
@@ -433,7 +416,7 @@
       \@mkboth{
           \MakeUppercase\listnomenclature}{\MakeUppercase\listnomenclature}}
 \begin{longtable}[c]{#1}#2\end{longtable}\par
-    \cleardoublepage
+    % \cleardoublepage
 }
 \newcommand\acknowledgements[1]{
 \btypeout{Acknowledgements}
@@ -443,7 +426,7 @@
 \begin{center}{\flushleft\Huge{\textbf{Acknowledgements}} \par}\end{center}
 {\normalsize #1}
 \vfil\vfil\null
-\cleardoublepage
+% \cleardoublepage
 }
 
 \usepackage{tikz}
@@ -458,7 +441,7 @@
 		\vspace{2.5cm}
 		\begin{center}
 			\makebox[4cm]{#2}  \hfill
-      \tikz[remember picture,overlay] 
+      \tikz[remember picture,overlay]
       \node[opacity=0.9,inner sep=0pt]at (2.13, 0.5) {\includegraphics[width=4cm,height=1.527cm]{Styles/ntu-watermark.png}};
       \makebox[4cm]{\includegraphics[height=0.9cm]{#3}}\\
 		\end{center}
@@ -468,7 +451,7 @@
 			\makebox[4cm]{Date}    \hfill \makebox[4cm]{\authornames}
 		\end{center}
 	\end{spacing}
-	\cleardoublepage
+	% \cleardoublepage
 }
 
 \newcommand\thesisdeclareSupervisor[3]{
@@ -480,7 +463,7 @@
 		\vspace{2.5cm}
 		\begin{center}
 			\makebox[4cm]{#2}  \hfill
-      \tikz[remember picture,overlay] 
+      \tikz[remember picture,overlay]
       \node[opacity=0.9,inner sep=0pt]at (2.13, 0.5) {\includegraphics[width=4cm,height=1.527cm]{Styles/ntu-watermark.png}};
 			\makebox[4cm]{\includegraphics[height=0.9cm]{#3}}\\
 		\end{center}
@@ -490,7 +473,7 @@
 			\makebox[4cm]{Date}    \hfill \makebox[4cm]{\supname}
 		\end{center}
 	\end{spacing}
-	\cleardoublepage
+	% \cleardoublepage
 }
 
 \newcommand\thesisdeclareAuthorship[4]{
@@ -505,7 +488,7 @@
 		\vspace{2.5cm}
 		\begin{center}
 			\makebox[4cm]{#3}  \hfill
-      \tikz[remember picture,overlay] 
+      \tikz[remember picture,overlay]
       \node[opacity=0.9,inner sep=0pt]at (2.13, 0.5) {\includegraphics[width=4cm,height=1.527cm]{Styles/ntu-watermark.png}};
 			\makebox[4cm]{\includegraphics[height=0.9cm]{#4}}\\
 		\end{center}
@@ -515,7 +498,7 @@
 			\makebox[4cm]{Date}    \hfill \makebox[4cm]{\authornames}
 		\end{center}
 	\end{spacing}
-	\cleardoublepage
+	% \cleardoublepage
 }
 
 
@@ -530,7 +513,7 @@
 	\begin{center}{\flushleft\Huge{\textbf{\secname\footnote[1]{The superscript $^*$ indicates joint first authors}}} \par}\end{center}
 	{\normalsize #1}
 	\vfil\vfil\null
-	\cleardoublepage
+	% \cleardoublepage
 }
 
 \newcommand\dedicatory[1]{
@@ -540,11 +523,11 @@
 \vskip 60\p@
 \begin{center}{\Large \sl #1}\end{center}
 \vfil\null
-\cleardoublepage
+% \cleardoublepage
 }
 \renewcommand\backmatter{
   \if@openright
-    \cleardoublepage
+    % \cleardoublepage
   \else
     \clearpage
   \fi
