@@ -1,0 +1,29 @@
+%!TEX root=../mythesis.tex
+% Chapter Template
+
+\chapter{Conclusion} % Main chapter title
+\chaptermark{Conclusion}  % replace the chapter name with its abbreviated form
+\label{ch:conclusion}
+
+
+%
+Open-domain question answering (OpenQA), the task of answering information-seeking question about nearly anything given a large knowledge base, has attracted tremendous attention from both the research community and the industry due to its impactful applications yet under-explored challenging problems.
+%
+In this final year project, our goal is to further advance the progress of current OpenQA systems by developing various mathematical-driven approaches.
+%
+More specifically, we take the landmark work of Dense Passage Retrieval~\cite{karpukhin2020dense} (DPR) as the baseline, on which we perform a comprehensive error analysis to identify model weaknesses.
+%
+We then propose several novel techniques that are designed to solve one model weakness at a time.
+
+%
+First, we introduce the simple parameter sharing idea on top of the DPR retriever in~\cref{ch:shared_encoders}, which is evidently shown to be consistently and substantially more efficient and effective than the baseline.
+%
+We then aim to tackle the long-standing \emph{decomposability gap} problem of two-stage OpenQA systems by proposing a late interaction module in~\cref{ch:late_interaction}, which we show marginally degrade the model performance.
+%
+Next, we take the idea of in-batch negatives~\cite{karpukhin2020dense} one step further and propose a novel objective function termed \emph{multi-similarity loss} in~\cref{ch:multi_similarity}.
+%
+This loss function efficiently takes into account all question-passage, question-question and passage-passage similarities without incurring additional computational overhead, thereby improving over the baseline model by a small margin.
+%
+Finally, in~\cref{ch:harder_inbatch_negatives} we introduce a novel batch construction technique named \emph{harder in-batch negatives} that groups similar samples into the same batch.
+%
+By providing a much stronger, more informative signal for retrieval training, our proposed approach is able to speed up the convergence, achieving significant improvements over the DPR retriever.

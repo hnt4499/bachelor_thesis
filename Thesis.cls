@@ -137,6 +137,7 @@
 \newcommand{\lmref}[1]{Lemma~\ref{#1}}
 \newcommand{\thref}[1]{Theorem~\ref{#1}}
 \newcommand{\rref}[1]{Remark~\ref{#1}}
+\newcommand{\FAKEREF}[1]{\textcolor{red}{{#1}}}
 %\newcommand{\lcite}[2][]{{#1},~\cite{#2}}
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\bottomfraction}{.85}
@@ -259,7 +260,7 @@
   {\large \deptname}\\%[1.2cm] % University name
   \vfill
   \setstretch{1.2}
-  \large A thesis submitted to the Nanyang Technological University \\ submitted as part of the honours requirements for the degree of\\ \degreename\\[1cm] % University requirement text
+  \large A thesis submitted to the Nanyang Technological University \\ as part of the honours requirements for the degree of\\ \degreename\\[1cm] % University requirement text
   {\large\bf \the\year}\\[2cm] % Date
   \end{center}
   \end{titlepage}

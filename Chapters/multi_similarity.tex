@@ -1,0 +1,155 @@
+%!TEX root=../mythesis.tex
+% Chapter Template
+
+\chapter{Multi-similarity Loss} % Main chapter title
+\chaptermark{Multi-similarity Loss}  % replace the chapter name with its abbreviated form
+\label{ch:multi_similarity}
+
+
+\section{Method}
+\label{sec:multi_similarity_method}
+
+
+%
+In this chapter, we introduce our novel multi-similarity loss for the DPR retriever model.
+%
+Recall that~\citet{karpukhin2020dense} proposed a negative log-likelihood (NLL) objective function that aimed to maximize the similarity between relevant question-passage pairs while minimizing the similarity of the irrelevant ones, as formulated in Definition~\ref{def:nll}
+%
+\begin{equation}
+\label{eq:nll}
+L(q_i, p^{+}_i, p^{-}_{i, 1}, p^{-}_{i, 2}, \ldots, p^{-}_{i, n}) = - \log \frac{e^{\text{sim}(q_i, p^{+}_i)}}{e^{\text{sim}(q_i, p^{+}_i)} + \sum_{j = 1}^{n} e^{\text{sim}(q_i, p^{-}_{i, j})}}
+\end{equation}
+%
+On top of that,~\citet{karpukhin2020dense} proposed the in-batch negative mechanism to take advantage of the computation used in extracting features from other passages within the same batch.
+%
+Under the in-batch negative settings where we have a batch of $B$ samples, in which each question $q_i$ is associated with one positive passage $p^{+}_i$ and one hard negative passage $p^{-}_i$.
+%
+We rewrite the question-passage loss function in~\eqref{eq:nll}  with respect to a single sample at index $i$ as
+%
+\begin{equation}
+\label{eq:nll_rewritten}
+L^{qp}_i = - \log \frac{e^{\text{sim}(q_i, p^{+}_i)}}{
+	\underbrace{
+		\vphantom{\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(q_i, p^{+}_j)}}
+		e^{\text{sim}(q_i, p^{+}_i)}
+	}_{\text{positive}} +
+	\underbrace{
+		\vphantom{\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(q_i, p^{+}_j)}}
+		e^{\text{sim}(q_i, p^{-}_i)}
+	}_{\text{hard negative}} +
+	\underbrace{
+		\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(q_i, p^{+}_j)} + 
+		\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(q_i, p^{-}_j)}
+	}_{\text{in-batch negatives}}
+}
+\end{equation}
+%
+We take this direction one step further and propose to reuse the feature extraction computation of both the passages~\emph{and the questions} within the same batch.
+
+%
+More specifically, similar to question-passage similarity scores defined in Definition~\ref{def:sim}, we define the question-question similarity and passage-passage similarity scores as
+%
+\begin{equation}
+\text{sim}(q_i, q_j) = \mathbf{v}^{(q_i)\intercal}_{\texttt{[CLS]}} \mathbf{v}^{(q_j)}_{\texttt{[CLS]}} \in \mathbb{R}
+\end{equation}
+%
+and
+%
+\begin{equation}
+\text{sim}(p_i, p_j) = \mathbf{v}^{(p_i)\intercal}_{\texttt{[CLS]}} \mathbf{v}^{(p_j)}_{\texttt{[CLS]}} \in \mathbb{R}
+\end{equation}
+%
+Next, similar to the question-passage NLL function in~\eqref{eq:nll_rewritten}, we define question-question and passage-passage objective functions as
+%
+\begin{equation}
+L^{qq}_i = - \log \frac{e^{\text{sim}(q_i, q_i)}}{
+	\underbrace{
+		\vphantom{\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(q_i, q_j)}}
+		e^{\text{sim}(q_i, q_i)}
+	}_{\text{in-batch positive}} +
+	\underbrace{
+		\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(q_i, q_j)}
+	}_{\text{in-batch negatives}}
+}
+\end{equation}
+%
+\begin{equation}
+%
+L^{pp}_i = - \log \frac{e^{\text{sim}(p_i, p_i)}}{
+	\underbrace{
+		\vphantom{\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(p_i, p_j)}}
+		e^{\text{sim}(p_i, p_i)}
+	}_{\text{in-batch positive}} +
+	\underbrace{
+		\sum_{\substack{j = 1 \\ j \neq i}}^{B} e^{\text{sim}(p_i, p_j)}
+	}_{\text{in-batch negatives}}
+}
+\end{equation}
+%
+where we introduce the notion of~\emph{in-batch positive} as the comparison between a question or passage against itself, which is analogous to the term~\emph{in-batch negative}~\cite{karpukhin2020dense}.
+%
+Finally, we take the sum of all the question-passage, question-question and passage-passage objective components (hence the name \emph{multi-similarity}) within the same batch as the final loss
+%
+\begin{equation}
+%
+L_{\text{multi\_similarity}} = \sum_{i = 1}^{B} L^{qp}_i + \lambda_{qq} \sum_{i = 1}^{B} L^{qq}_i + \lambda_{pp} \sum_{i = 1}^{B} L^{pp}_i
+\end{equation}
+%
+where $\lambda_{qq}$ and $\lambda_{pp}$ are the coefficients of the question-question and passage-passage NLL objective functions, respectively.
+%
+Not only does this objective function design efficiently reuse computation of both passages and questions, but it also effectively captures all similarity aspects within the same batch while incurring negligible computational overhead.
+
+
+\section{Experimental Results}
+\label{sec:multi_similarity_results}
+
+
+\begin{table*}[t!]
+	\setlength\tabcolsep{5pt}
+	\centering
+	\small
+	\begin{tabular}{llll|cccc}
+		\toprule
+		\textbf{Architecture} & \textbf{Loss function} & \textbf{$\lambda_{qq}$} & \textbf{$\lambda_{pp}$}
+		& Top-1 & Top-5 & Top-20 & Top-100 \\ 
+		\midrule
+		\multirow{4}{*}{\shortstack{DPR \\(shared encoders)}} & DPR loss & &
+		& \textbf{53.88} & 72.49 & 82.38 & 87.62 \\
+		& Multi-similarity loss & 0.1 & 0.1
+		& 53.46 & 72.49 & 82.41 & \textbf{87.87} \\
+		& Multi-similarity loss & 0.5 & 0.5
+		& 53.21 & 72.47 & \textbf{82.44} & 87.76 \\
+		& Multi-similarity loss & 0.7 & 0.7
+		& 52.96 & \textbf{72.74} & 82.60 & 87.78 \\
+		\bottomrule
+	\end{tabular}
+	\caption[Top-$\{1, 5, 20, 100\}$ retrieval accuracy on the Natural Questions test set of the DPR retriever (shared encoders) with and without multi-similarity loss.]{
+		%
+		Top-$\{1, 5, 20, 100\}$ retrieval accuracy on the Natural Questions test set of the DPR retriever (shared encoders) with and without multi-similarity loss, calculated as the percentage of top-$k$ retrieved passages that contain the answer.
+		%
+		The proposed multi-similarity loss mariginally improves over the DPR baseline across different loss coefficients  $\lambda_{qq}$ and $\lambda_{pp}$.
+	}
+	
+	\label{tab:multi_similarity_results}
+\end{table*}
+
+
+%
+We conduct an experiment on NQ following the experimental settings described in~\sref{sec:exp_setup} with a batch size of 24 and different sets of multi-similarity coefficients $\lambda_{qq}$ and $\lambda_{pp}$.
+%
+The baseline model is taken as the DPR retriever with parameter sharing introduced in~\cref{ch:shared_encoders}.
+%
+\tref{tab:multi_similarity_results} presents the retrieval recall on the NQ test set.
+
+%
+As seen from~\tref{tab:multi_similarity_results}, the multi-similarity objective function produces a marginal improvement to the baseline DPR model with up to 0.27 points gain in performance.
+%
+Interestingly, we observe that the proposed approach achieves a performance boost with top-$\{5, 20, 100\}$ while slightly degrading top-1 retrieval accuracy.
+%
+We hypothesize that the multi-similarity loss has a regularization effect~\cite{ioffe2015batch} that enforces the model to be consistent about the similarity between all pairs of texts in the corpus, with the top-1 degradation as a side product.
+%
+This is evidently shown by the fact that the top-1 retrieval accuracy is decreased as we increase the values of the coefficients of the question-question and passage-passage similarities.
+%
+Nevertheless, we note that the top-100 retrieval accuracy is the only metric of interest for retriever models as $k=100$ is the actual number of passages to be retrieved during inference.
+%
+Therefore we conclude that our multi-similarity objective function has a marignal, positive effect on retriever model training.

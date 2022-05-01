@@ -40,6 +40,7 @@
 \usepackage{subcaption}
 \usepackage{mathtools}
 \usepackage{lipsum}
+\usepackage{hyperref}
 \usepackage[ruled,vlined,noresetcount]{algorithm2e}
 %\usepackage{algpseudocode}
 \usepackage[square, numbers, comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers'
@@ -126,7 +127,11 @@
 
 \acknowledgements{\addtocontents{toc}{\vspace{0.8em}} % Add a gap in the Contents, for aesthetics
 
-I wish to express my greatest gratitude to my advisor.
+I would like to express my sincere gratitude to my supervisor Asst. Prof. Pun Chi Seng and my co-supervisor Assoc. Prof. Joty Shafiq Rayhan for their continuous support, guidance, encouragement, and invaluable feedback throughout the final year project.
+
+I would also like to extend my gratitude to my parents for their wise counsel and sympathetic ear. I could not have completed this project without their support and understanding.
+
+%Lastly, I wish to thank my ex-girlfriends for their presence in my heart. The project could have been finished much earlier without them.
 
 % \begin{flushright}
 % \emph{Jinming Xu, December 2015}
@@ -169,7 +174,26 @@ I wish to express my greatest gratitude to my advisor.
 
 % 1. The Problem 2. The Issues 3. The Approach 4. The Results 5. The Experiments 6. The Applications
 
-My abstracts
+Deep learning methods have drawn tremendous attention from both the research community and the industrial practitioners thanks to their undeniable power in learning feature representation in higher dimensions without manual, handcrafting features.
+%
+An application of deep learning that arises naturally is question answering, in which a question answering system must answer questions posed by humans.
+%
+One of its sub-fields, open-domain question answering, attempts to answer questions about nearly anything, without being given relevant reference texts.
+%
+Despite its impactful applications in search engines, chatbots and factual correction, research work in open-domain question answering is relatively under-explored due to its complex and large-scale nature.
+
+%
+In this work, we aim to advance the progress of recent open-domain question answering systems by developing various mathematical-driven methods.
+%
+More specifically, in the first part of this thesis, we introduce the widely adopted two-stage paradigm in open-domain question answering and perform comprehensive error analysis on state-of-the-art models.
+%
+Based on this, we are then able to formulate and develop methods aiming specifically at overcoming these weaknesses in the second part of the thesis.
+%
+These approaches range from simple methods such as parameter sharing and data augmentation to more sophisticated methods such as designing new objective functions or pseudo data synthesis and semi-supervised learning.
+%
+Finally, we unify these developed methods into a single framework that outperforms state-of-the-art models by a significant margin on common benchmarking datasets.
+%
+The code to reproduce our experiments is released at \url{https://github.com/hnt4499/DPR}.
 
 
 
@@ -224,66 +248,84 @@ My abstracts
 \listofnomenclature{ll} % Include a list of Symbols (a three column table)
 {
 \multicolumn{2}{l}{\LARGE{\textbf{Symbols}}}\\[0.618cm]
-$\mathcal{R}^n$                    &the $n$-dimensional Euclidean space\\
-$\mathcal{H}$                      &the Euclidean  space\\
-$\norm{\cdot}$                     &the 2-norm of a vector or matrix in Euclidean space\\
-$\norm{\cdot}_G$                   &the induced norm of a vector in G-space\\
-$\norm{\cdot}_E$                   &the induced norm of a vector or matrix in probabilistic space\\
+$\mathbb{R}^n$                    &the $n$-dimensional Euclidean space\\
+%$\mathcal{H}$                      &the Euclidean  space\\
+%$\norm{\cdot}$                     &the 2-norm of a vector or matrix in Euclidean space\\
+%$\norm{\cdot}_G$                   &the induced norm of a vector in G-space\\
+%$\norm{\cdot}_E$                   &the induced norm of a vector or matrix in probabilistic space\\
 
 
 $\odot$                            &the Hadamard (component-wise) product\\
-$\otimes$                          &the Kronecker product\\
+%$\otimes$                          &the Kronecker product\\
 $\innprod{\cdot}{\cdot}$           &the inner product of two vectors\\
-$\circ$                            &the composition of functions\\ [0.618cm]
+%$\circ$                            &the composition of functions\\ [0.618cm]
 
 
-$\nabla f$                    &the gradient vector\\
-$\mathcal{C}^k$               &the function with continuous partial derivatives up to $k$ orders\\
-% $T_x\mathcal{M}$              &the tangent space of the set $\mathcal{M}$\\
-% $x_i$                         &the $i$-th component of a vector $x$\\
-$x_{i,k}$                     &the $i$-th component of a vector $x$ at time $k$\\
-$\bar{x}$                     &the vector with the average of all components of $x$ as each element\\
-$\ones$                       &all-ones column vector with proper dimension\\
-$\mathcal{C}$                 &the average space, i.e., $span\{{\bf 1}\}$ \\
-$\mathcal{C}^\perp$           &the disagreement space, i.e., $span^\perp\{{\bf 1}\}$ \\
-% W                             &the weight matrix\\
-% L                             &the Laplacian matrix\\
-$\Pi_\parallel$               &the projection matrix to the average space $\mathcal{C}$\\
-$\Pi_\perp$                   &the projection matrix to the disagreement space $\mathcal{C}^\perp$ \\
-$O(\cdot)$                    &order of magnitude or ergodic convergence rate (running average)\\
-$o(\cdot)$                    &non-ergodic convergence rate\\
+%$\nabla f$                    &the gradient vector\\
+%$\mathcal{C}^k$               &the function with continuous partial derivatives up to $k$ orders\\
+%% $T_x\mathcal{M}$              &the tangent space of the set $\mathcal{M}$\\
+%% $x_i$                         &the $i$-th component of a vector $x$\\
+%$x_{i,k}$                     &the $i$-th component of a vector $x$ at time $k$\\
+%$\bar{x}$                     &the vector with the average of all components of $x$ as each element\\
+%$\ones$                       &all-ones column vector with proper dimension\\
+%$\mathcal{C}$                 &the average space, i.e., $span\{{\bf 1}\}$ \\
+%$\mathcal{C}^\perp$           &the disagreement space, i.e., $span^\perp\{{\bf 1}\}$ \\
+%% W                             &the weight matrix\\
+%% L                             &the Laplacian matrix\\
+%$\Pi_\parallel$               &the projection matrix to the average space $\mathcal{C}$\\
+%$\Pi_\perp$                   &the projection matrix to the disagreement space $\mathcal{C}^\perp$ \\
+%$O(\cdot)$                    &order of magnitude or ergodic convergence rate (running average)\\
+%$o(\cdot)$                    &non-ergodic convergence rate\\
 % $O(\cdot)$                    &the ergodic convergence rate stated in terms of the running average\\
 % $o(\cdot)$                    &the non-ergodic convergence rate stated in terms of $x_k$\\
 
 
 
-$\mathcal{N}_i$               &the index set of the neighbors of agent $i$ \\ [1cm]
+%$\mathcal{N}_i$               &the index set of the neighbors of agent $i$ \\ [1cm]
 
+\\ [1cm]
 \multicolumn{2}{l}{\LARGE{\textbf{Acronyms}}}\\[0.618cm]
-DOP                      & Distributed Optimization Problem\\
-EDOP                     & Equivalent Distributed Optimization Problem\\
-SDOP                     & Stochastic Distributed Optimization Problem\\
-OEP                      & Optimal Exchange Problem\\
-OCP                      & Optimal Consensus Problem\\
-DOCP                     & Dynamic Optimal Consensus Problem\\[0.618cm]
-AugDGM           & Augmented Distributed Gradient Methods\\
-AsynDGM          & Asynchronous Distributed Gradient Methods\\
-D-ESC            & Distributed Extremum Seeking Control\\
-D-SPA            & Distributed Simultaneous Perturbation Approach\\
-% D-PDSPA & Distributed Primal-Dual Simultaneous Perturbation Approach\\
-D-FBBS           & Distributed Forward-Backward Bregman Splitting\\
-ADMM             & Alternating Direction Method of Multipliers\\
-DSM              & Distributed (Sub)gradient Method\\[0.618cm]
+%DOP                      & Distributed Optimization Problem\\
+%EDOP                     & Equivalent Distributed Optimization Problem\\
+%SDOP                     & Stochastic Distributed Optimization Problem\\
+%OEP                      & Optimal Exchange Problem\\
+%OCP                      & Optimal Consensus Problem\\
+%DOCP                     & Dynamic Optimal Consensus Problem\\[0.618cm]
+%AugDGM           & Augmented Distributed Gradient Methods\\
+%AsynDGM          & Asynchronous Distributed Gradient Methods\\
+%D-ESC            & Distributed Extremum Seeking Control\\
+%D-SPA            & Distributed Simultaneous Perturbation Approach\\
+%% D-PDSPA & Distributed Primal-Dual Simultaneous Perturbation Approach\\
+%D-FBBS           & Distributed Forward-Backward Bregman Splitting\\
+%ADMM             & Alternating Direction Method of Multipliers\\
+%DSM              & Distributed (Sub)gradient Method\\[0.618cm]
+%
+%GAS                      & Globally Asymptotically Stable \\
+%UGAS                     & Uniformly Globally Asymptotically Stable \\
+%SPAS                     & Semi-globally Practically Asymptotically Stable\\
+%USPAS                    & Uniformly Semi-globally Practically Asymptotically Stable\\[0.618cm]
+%HoS                      & Heterogeneity of Stepsize\\
+%FPR                      & Fixed Point Residual\\
+%OBE                      & Objective Error\\[0.618cm]
+%i.i.d.           & independent and identically distributed\\
+%$a.s.$           & almost sure convergence of a random sequence\\
 
-GAS                      & Globally Asymptotically Stable \\
-UGAS                     & Uniformly Globally Asymptotically Stable \\
-SPAS                     & Semi-globally Practically Asymptotically Stable\\
-USPAS                    & Uniformly Semi-globally Practically Asymptotically Stable\\[0.618cm]
-HoS                      & Heterogeneity of Stepsize\\
-FPR                      & Fixed Point Residual\\
-OBE                      & Objective Error\\[0.618cm]
-i.i.d.           & independent and identically distributed\\
-$a.s.$           & almost sure convergence of a random sequence\\
+	QA & Question Answering\\
+	MRC & Machine Reading Comprehension\\
+	OpenQA & Open-domain Question Answering\\
+	NLP & Natural Language Processing\\
+	IR & Information Retrieval\\
+	DPR & Dense Passage Retrieval~\cite{karpukhin2020dense}\\
+	MIPS & Maximum Inner Product Search~\cite{johnson2019billion}\\
+	TF-IDF & Term Frequency-Inverse Document Frequency\\
+	LSTM & Long Short-term Memory~\cite{hochreiter1997long}\\
+	FiD & Fusion in Decoder~\cite{izacard2021leveraging}\\
+	NQ & Natural Questions~\cite{kwiatkowski2019natural}\\
+	EM & Exact Match\\
+	FFN & Feed-forward Neural Networks\\
+	NLL & Negative Log-likelihood Loss\\
+	ANCE & Approximate Nearest Neighbor Negative Contrastive Learning~\cite{xiong2020approximate}\\
+	GANs & Generative Adversarial Networks~\cite{goodfellow2014generative}\\
 }
 
 %----------------------------------------------------------------------------------------
@@ -304,13 +346,17 @@ $a.s.$           & almost sure convergence of a random sequence\\
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-\input{./Chapters/Chapter1}
+\input{./Chapters/introduction}
 %\part{Part Name: Use it when there are many chapters}
-\input{./Chapters/Chapter2}
-\input{./Chapters/Chapter3}
+%\input{./Chapters/related_work}
+\input{./Chapters/background}
 %\part{Again for Second Part}
-\input{./Chapters/Chapter4}
-\input{./Chapters/Chapter5}
+\input{./Chapters/shared_encoders}
+\input{./Chapters/late_interaction}
+\input{./Chapters/multi_similarity}
+\input{./Chapters/harder_inbatch_negatives}
+\input{./Chapters/query_expansion}
+\input{./Chapters/conclusion}
 
 
 %----------------------------------------------------------------------------------------
@@ -369,6 +415,6 @@ $a.s.$           & almost sure convergence of a random sequence\\
 \label{Bibliography}
 \setstretch{1}
 \bibliographystyle{unsrtnat}
-\bibliography{References/first_paper,References/second_paper}
+\bibliography{references.bib}
 
 \end{document}

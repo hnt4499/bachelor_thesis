@@ -1,0 +1,116 @@
+%!TEX root=../mythesis.tex
+% Chapter Template
+
+\chapter{Harder In-batch Negatives} % Main chapter title
+\chaptermark{Harder In-batch Negatives}  % replace the chapter name with its abbreviated form
+\label{ch:harder_inbatch_negatives}
+
+
+\section{Method}
+\label{sec:harder_inbatch_negatives_method}
+
+
+%
+Recall that in DPR~\cite{karpukhin2020dense}, each question in a mini-batch is assigned with a single hard negative and multiple in-batch negatives which are positive and negative passages of other question within the same batch.
+%
+This can easily be understood from the reformulated equation~\eqref{eq:nll_rewritten}.
+%
+\citet{karpukhin2020dense} claimed that in-batch negative is a method that works consistently well both in their work and in previous work~\cite{yih2011learning, henderson2017efficient, gillick2019learning}.
+%
+However, we argue that although this method is \emph{efficient} in reusing computation from within the same batch, it does not necessarily provide informative in-batch negatives for an \emph{effective} constrastive learning process.
+%
+In other words, the in-batch negative passages drawn from other samples could potentially be completely irrelevant to the question and positive passage at hand, thereby producing minimal training signal to the model.
+
+%
+In a related work, \citet{xiong2020approximate} showed that by using a DPR checkpoint to perform retrieval in parallel with training, a set of DPR hard negatives can be built and used for DPR training itself.
+%
+This method, named ANCE~\footnote{\textbf{A}pproximate \textbf{N}earest neighbor negative \textbf{C}ontrastiv\textbf{E} Learning~\cite{xiong2020approximate}}, builds an index of negative passages considerably more informative than BM25 hard negatives, and thus was able to improve over the baseline DPR model by a substantial margin.
+%
+However, this approach requires running a process in parallel with the training process that continuously builds the FAISS index and updates the retrieval results, which is extremely expensive in terms of both computation and memory.
+%
+In this work we propose a better trade-off that inherits the efficiency of \emph{in-batch negatives} and effectiveness of informative negatives without requiring the expensive retrieval step.
+%
+We term this approach \emph{harder in-batch negatives}.
+%
+Different from \citet{xiong2020approximate}, we want to improve the informativeness of in-batch negatives rather than hard negatives given its predominant presence in a mini-batch.
+%
+
+To achieve this goal, we train classification model on the DBpedia dataset~\cite{lehmann2015dbpedia} to classify document categories.
+%
+More specifically, DBpedia~\cite{lehmann2015dbpedia} is a large-scale, structured, multi-lingual knowledge base extracted from Wikipedia.
+%
+For our use case, it contains Wikipedia articles with their category classification with three different levels of granularity.
+%
+For example, at the highest level we have a set of categories of $\{\texttt{agent}, \texttt{place}, \texttt{species}, \texttt{event}, \ldots\}$.
+%
+We trained a BERT for classification~\cite{wolf2019huggingface} model to classify document categories with all three levels of granularity with multi-task training, with a performance of $\text{F1\_score} = \{0.996, 0.975, 0.959\}$ for each of the three levels on the DBpedia test set.
+%
+We note that the cost of this training step is amortized since it is only done once, as opposed to ANCE~\cite{xiong2020approximate} which incurs a recurring expensive cost.
+
+With the trained model, we then performed inference to infer the category types of each passage chunk in the Wikipedia dump introduced in~\sref{sec:exp_data}, with all three classification levels.
+%
+It is worth noting that we do not directly apply the category classification data from DBpedia to Wikipedia, because (1) they may use different sets of articles due to version mismatch; and (2) this classification labels are on the article level while we want it to be as granular as on the passage level.
+%
+The inferred category information can then be used to construct a batch of informative in-batch negatives for DPR retrieval training.
+%
+In particular, we implement a greedy algorithm that constructs training batches one by one such that the resulting positive passages within a batch share the same category classification of either the first, second or third level of granularity~\footnote{We refer interested readers to our code repository at \url{https://github.com/hnt4499/DPR} for the implementation details.}.
+%
+We also ensure a level of randomness in our algorithm so as to diversify the batch allocation across different epochs.
+%
+By doing so, we are effectively creating a pool of similar passages within the same batch, generating strong training signal for the retriever model.
+%
+We note that the theory of faster training convergence and higher model performance brought about by \emph{harder} hard negatives has been well established in the literature of metric learning.
+%
+We refer interested reader to~\citet{xiong2020approximate} for a comprehensive theoretical analysis on this matter.
+
+
+\section{Experimental Results}
+\label{sec:harder_inbatch_negatives_results}
+
+
+\begin{table*}[t!]
+	\setlength\tabcolsep{5pt}
+	\centering
+	\small
+	\begin{tabular}{ll|cccc}
+		\toprule
+		\textbf{Architecture} & \textbf{Batch construction}
+		& Top-1 & Top-5 & Top-20 & Top-100 \\ 
+		\midrule
+		\multirow{2}{*}{\shortstack{DPR \\(shared encoders)}} 
+		& Random
+		& 53.41 & 71.24 & 80.66 & 86.90 \\
+		& Harder in-batch negatives
+		& \textbf{53.66} & \textbf{72.41} & \textbf{81.50} & \textbf{87.04} \\
+		\bottomrule
+	\end{tabular}
+	\caption[Top-$\{1, 5, 20, 100\}$ retrieval accuracy on the Natural Questions test set of the DPR retriever (shared encoders) with two different batch construction algorithms, namely random sampling (used in DPR~\cite{karpukhin2020dense}) and our \emph{harder in-batch negatives}.]{
+		%
+		Top-$\{1, 5, 20, 100\}$ retrieval accuracy on the Natural Questions test set of the DPR retriever (shared encoders) with two different algorithms of batch construction, namely random sampling and our \emph{harder in-batch negatives}.
+		%
+		The retrieval accuracy is calculated as the percentage of top-$k$ retrieved passages that contain the answer.
+		%
+		The proposed batch construction significantly improves over the DPR baseline across different values of $k$.
+	}
+	
+	\label{tab:multi_similarity_results}
+\end{table*}
+
+
+%
+We present in~\tref{tab:multi_similarity_results} the experimental results on the NQ dataset with two different mini-batch construction algorithms, namely random sampling used by DPR~\cite{karpukhin2020dense} and \emph{harder in-batch negatives} proposed in this work.
+%
+The underlying architecture is set to the DPR retriever with parameter sharing as proposed in~\cref{ch:shared_encoders}, and the batch size is set to 24 due to computational constraints.
+%
+We observe that by using harder in-batch negatives, we are able to achieve substantial improvements over the baseline DPR model with up to 1.17 points in retrieval accuracy.
+%
+This attests to the effectiveness of our proposed approach in providing informative training signal to speed up the convergence while being much computationally more efficient than ANCE~\cite{xiong2020approximate}.
+
+%
+We note that one could design a more sophisticated approach built on top of our proposed idea.
+%
+For example, we can combine the complementary effectiveness of our proposed harder in-batch negatives with \emph{harder hard negatives} used by ANCE~\cite{xiong2020approximate}, to obtain a general \emph{harder negatives} training paradigm.
+%
+Additionally, it is worth noting that our novel batch construction method can be applied to our novel multi-similarity objective function introducted in~\cref{ch:multi_similarity} to further boost training convergence by constructing similar question-passage, question-question and passage-passage pairs.
+%
+We leave these ideas for a future work.
